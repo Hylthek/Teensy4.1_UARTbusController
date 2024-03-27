@@ -13,6 +13,10 @@ File RPM_data;
 File Accelerometer_data;
 File deviceFiles[numDevices] =      {RPM_data,  Accelerometer_data};
 std::string fileNames[numDevices] = {"RPM_data", "Accelerometer_data"};
+std::string fileHeaders[numDevices] = {
+  "Milliseconds,RPM\n" ,
+  "Milliseconds,xAccel,yAccel,zAccel\n"
+}
 //consts-------------------------------------------------------------------------------------------------------
 const int pinLED = 13; //for debugging
 const int pinTxD = 14; //serial output
@@ -74,6 +78,12 @@ void setup() { // put your setup code here, to run once:
   //sets the baud rate ^^
   //Teensy4.1 was accurate at a clock setting of 600MHz
   mySerial.listen(); //marks this serial's reciever as the active one in the chip
+
+  //add data titles
+  for(int i = 0; i < numDevices; i++) {
+    deviceFiles[i].print(fileHeaders[i])
+  }
+
   //post-setup-------------------------------------------------------------------------------------------------
   for (int i = 0; i < 30; i++) {
     digitalWrite(pinLED, HIGH);
