@@ -127,7 +127,7 @@ void loop() { // put your main code here, to run repeatedly:
     //if EOT, log the string onto the file- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if (currByte == EOT) {
       deviceFiles[currDevice - 1].print(dataToSave.data());
-      Serial.println("");
+      Serial.println(""); //DEBUG-DEBUG-DEBUG
       deviceFiles[currDevice - 1].print("\n");
       break;
     }
