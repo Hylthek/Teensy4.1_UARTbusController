@@ -14,8 +14,8 @@ File Accelerometer_data;
 File deviceFiles[numDevices] =      {RPM_data,  Accelerometer_data};
 std::string fileNames[numDevices] = {"RPM_data", "Accelerometer_data"};
 std::string fileHeaders[numDevices] = {
-  "Milliseconds,RPM\n" ,
-  "Milliseconds,xAccel,yAccel,zAccel\n"
+  "Timestamp,Milliseconds,RPM\n" ,
+  "Timestamp,Milliseconds,xAccel,yAccel,zAccel\n"
 }
 //consts-------------------------------------------------------------------------------------------------------
 const int pinLED = 13; //for debugging
@@ -26,6 +26,7 @@ const char EOT = 0; //EndOfTransmission character
 SoftwareSerial mySerial(pinRxD, pinTxD, true);
 //global variables---------------------------------------------------------------------------------------------
 int currDevice = 0;
+unsigned long setupTimeOffset = 0;
 //SdExFat sd;       //IDK delete?
 //SdVolume volume;  //IDK delete?
 Sd2Card card;
@@ -91,6 +92,8 @@ void setup() { // put your setup code here, to run once:
     digitalWrite(pinLED, LOW);
     delay(50);
   }
+  //set time offset
+  setupTimeOffset = millis();
 }
 //loop function================================================================================================
 void loop() { // put your main code here, to run repeatedly:
@@ -114,6 +117,13 @@ void loop() { // put your main code here, to run repeatedly:
     delay(1);
   }
   //record data onto files-------------------------------------------------------------------------------------
+  //print time data
+  unsigned long currMillis = millis() - setupTimeOffset;
+  deviceFiles[currDevice-1].print(millisToTimestamp(currMillis));
+  deviceFiles[currDevice-1].print(",");
+  deviceFiles[currDevice-1].print(currMillis);
+  deviceFiles[currDevice-1].print(",");
+  //print sensor data
   std::string dataToSave = "";
   for (int i = 0; i < errorSafegaurdTimeout; i++) {
     char currByte = mySerial.read(); //read dataByte char
@@ -140,4 +150,21 @@ void loop() { // put your main code here, to run repeatedly:
   }
   //save data--------------------------------------------------------------------------------------------------
   deviceFiles[currDevice - 1].flush();
+}
+
+string millisToTimestamp(unsigned long millisParam) {
+  int millisecond = millisParam % 1000;
+  int second = (millisParam / 1000) % 60;
+  int minute = (second / 60) % 60;
+  int hour = minute / 60;
+  std::string output = "";
+  output += std::to_string(hour);
+  output += ":"
+  output += std::to_string(minute);
+  output += ":"
+  output += std::to_string(second);
+  output += "."
+  output += std::to_string(millisecond);
+
+  return output;
 }
