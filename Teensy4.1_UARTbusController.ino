@@ -16,7 +16,7 @@ std::string fileNames[numDevices] = {"RPM_data", "Accelerometer_data"};
 std::string fileHeaders[numDevices] = {
   "Timestamp,Milliseconds,RPM\n" ,
   "Timestamp,Milliseconds,xAccel,yAccel,zAccel\n"
-}
+};
 //consts-------------------------------------------------------------------------------------------------------
 const int pinLED = 13; //for debugging
 const int pinTxD = 14; //serial output
@@ -82,7 +82,7 @@ void setup() { // put your setup code here, to run once:
 
   //add data titles
   for(int i = 0; i < numDevices; i++) {
-    deviceFiles[i].print(fileHeaders[i])
+    deviceFiles[i].print(fileHeaders[i].data());
   }
 
   //post-setup-------------------------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ void loop() { // put your main code here, to run repeatedly:
   //record data onto files-------------------------------------------------------------------------------------
   //print time data
   unsigned long currMillis = millis() - setupTimeOffset;
-  deviceFiles[currDevice-1].print(millisToTimestamp(currMillis));
+  deviceFiles[currDevice-1].print(millisToTimestamp(currMillis).data());
   deviceFiles[currDevice-1].print(",");
   deviceFiles[currDevice-1].print(currMillis);
   deviceFiles[currDevice-1].print(",");
@@ -152,18 +152,18 @@ void loop() { // put your main code here, to run repeatedly:
   deviceFiles[currDevice - 1].flush();
 }
 
-string millisToTimestamp(unsigned long millisParam) {
+std::string millisToTimestamp(unsigned long millisParam) {
   int millisecond = millisParam % 1000;
   int second = (millisParam / 1000) % 60;
   int minute = (second / 60) % 60;
   int hour = minute / 60;
   std::string output = "";
   output += std::to_string(hour);
-  output += ":"
+  output += ":";
   output += std::to_string(minute);
-  output += ":"
+  output += ":";
   output += std::to_string(second);
-  output += "."
+  output += ".";
   output += std::to_string(millisecond);
 
   return output;
