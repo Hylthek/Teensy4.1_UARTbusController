@@ -153,18 +153,27 @@ void loop() { // put your main code here, to run repeatedly:
 }
 
 std::string millisToTimestamp(unsigned long millisParam) {
+  //calculate values
   int millisecond = millisParam % 1000;
   int second = (millisParam / 1000) % 60;
-  int minute = (second / 60) % 60;
-  int hour = minute / 60;
+  int minute = (millisParam / (60*1000) ) % 60;
+  int hour = millisParam / (60*60*1000);
+  //make output string
   std::string output = "";
   output += std::to_string(hour);
-  output += ":";
+  output += " ";
+  if(minute < 10) //align every number
+    output += "0";
   output += std::to_string(minute);
-  output += ":";
+  output += " ";
+  if(second < 10) //align every number
+    output += "0";
   output += std::to_string(second);
-  output += ".";
+  output += " ";
+  if(millisecond < 10) //align every number
+    output += "0";
+  if(millisecond < 100) //align every number
+    output += "0";
   output += std::to_string(millisecond);
-
   return output;
 }
