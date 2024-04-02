@@ -123,6 +123,12 @@ void loop() { // put your main code here, to run repeatedly:
   deviceFiles[currDevice-1].print(",");
   deviceFiles[currDevice-1].print(currMillis);
   deviceFiles[currDevice-1].print(",");
+
+  Serial.print(millisToTimestamp(currMillis).data());
+  Serial.print(",");
+  Serial.print(currMillis);
+  Serial.print(",");
+
   //print sensor data
   std::string dataToSave = "";
   for (int i = 0; i < errorSafegaurdTimeout; i++) {
@@ -132,13 +138,14 @@ void loop() { // put your main code here, to run repeatedly:
       continue;
     }
     
-    Serial.write(currByte);
     
     //if EOT, log the string onto the file- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if (currByte == EOT) {
       deviceFiles[currDevice - 1].print(dataToSave.data());
-      Serial.println(""); //DEBUG-DEBUG-DEBUG
       deviceFiles[currDevice - 1].print("\n");
+
+      Serial.print(dataToSave.data()); //DEBUG-DEBUG-DEBUG
+      Serial.print("\n"); //DEBUG-DEBUG-DEBUG
       break;
     }
     //add byte to the string- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
